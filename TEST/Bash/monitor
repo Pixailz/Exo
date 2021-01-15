@@ -1,0 +1,13 @@
+#!/bin/bash
+
+if [[ "$1" == "ON" ]]; then
+	echo 1 | sudo tee /proc/brcm_monitor* > /dev/null
+	echo -e "Monitor mode enabled"
+	echo -e "\tprism0 interface created"
+elif [[ "$1" == "OFF" ]]; then
+	echo 0 | sudo tee /proc/brcm_monitor* > /dev/null
+	echo -e "Monitor mode disable"
+	echo -e "\tprism0 interface deleted" 
+else
+	echo -e "$0 Usage : $0 [ON/OFF]"
+fi

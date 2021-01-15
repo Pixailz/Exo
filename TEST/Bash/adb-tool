@@ -1,0 +1,10 @@
+#!/bin/bash
+# ADB toolkit ALPHA
+
+usage (){
+    echo "Usage : $0 [] []"
+}
+
+if [[ "$1" ]]; then
+
+fi

@@ -1,0 +1,12 @@
+#!/bin/bash
+
+declare -a Devices
+apk=""
+for apk in $(adb shell cmd package list packages -3|cut -d: -f2); do
+    Devices+=($(echo ${apk}))
+done
+
+i=""
+for i in "${Devices[@]}"; do
+    echo "$i"
+done

@@ -1,0 +1,19 @@
+#!/bin/bash
+
+function getDevicesNEW () {
+    adbDevices=($(adb devices|sed '1d'| awk -F' ' '{print $1}'))
+    adbDevicesName=("$(adb -s ${adbDevices[0]} shell getprop ro.product.model)")
+}
+
+function printVar (){
+    echo -e "${adbDevices[0]}"
+    echo -e "${adbDevicesName[0]}"
+}
+
+function menu (){
+    clear
+    echo -e "HelloWorld"
+}
+
+getDevicesNEW
+printVar
