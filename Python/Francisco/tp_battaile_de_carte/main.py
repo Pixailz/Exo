@@ -36,6 +36,7 @@ deck_player_a = list()
 deck_player_b = list()
 
 winner_prize = list()
+time_round = 2
  #
 #
 
@@ -133,7 +134,6 @@ def distribute_cards():
 
                 deck_player_b.append(pack_of_cards.pop())
 
-
 def reverse_deck(opt=None):
     if opt == None:
 
@@ -217,6 +217,7 @@ def play_game():
         winner_prize = list()
 
         round()
+        sleep(time_round)
 
         if len(deck_player_a) == 0:
 
