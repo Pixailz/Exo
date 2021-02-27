@@ -110,7 +110,6 @@ def distribute_cards():
         whos_first = "b"
 
     print(bool(len(pack_of_cards) % 2))
-    exit()
 
     while len(pack_of_cards) != 0:
 
