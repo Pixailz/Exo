@@ -59,7 +59,7 @@ def create_pack():
         elif x == 6:
             grade = "Six"
         elif x == 7:
-            grade = "sept"
+            grade = "Sept"
         elif x == 8:
             grade = "Huit"
         elif x == 9:
