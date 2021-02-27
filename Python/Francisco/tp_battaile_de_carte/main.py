@@ -4,122 +4,204 @@
 #
 # HEADER
 from random import randint
-from random import shuffle as melange
-
-"""
-    for items in cartes_joueur_A:
-        print(f"{items}")
-    print("\n\n")
-    for items in cartes_joueur_B:
-        print(f"{items}")
-"""
+from random import shuffle
+from time import sleep
  #
 #
 
-def debog():
+def debog_print(opt=None):
 
-    print(f"{cartes_joueur_A[:]}")
-    print(f"{cartes_joueur_A[:]}")
+    print("BEGIN\n\n")
 
-def creation_paquet():
+    if opt == None:
+        print("Pa cards :\n")
+        for card in deck_player_a:
+            print(card)
+        print("\nPb cards :\n")
+        for card in deck_player_b:
+            print(card)
 
-    jeux_de_cartes = list()
-    ## ADD CHAR INSTEAD OF INT
+    elif opt == "deck":
+        for card in pack_of_cards:
+            print(card)
+        print("pack")
+
+    print("\n\nEND\n")
+
+#
+# GLOBAL VAR
+pack_of_cards = list()
+
+deck_player_a = list()
+deck_player_b = list()
+
+winner_prize = list()
+ #
+#
+
+def create_pack():
+
+    grade = str()
 
     for x in range(7, 14 + 1):
+
+        if x == 1:
+            grade = "Un"
+        elif x == 2:
+            grade = "Deux"
+        elif x == 3:
+            grade = "Trois"
+        elif x == 4:
+            grade = "Quatre"
+        elif x == 5:
+            grade = "Cinq"
+        elif x == 6:
+            grade = "Six"
+        elif x == 7:
+            grade = "sept"
+        elif x == 8:
+            grade = "Huit"
+        elif x == 9:
+            grade = "Neuf"
+        elif x == 10:
+            grade = "Dix"
+        elif x == 11:
+            grade = "Valet"
+        elif x == 12:
+            grade = "Dame"
+        elif x == 13:
+            grade = "Roi"
+        elif x == 14:
+            grade = "As"
+
         for y in range(1, 4+1):
-
             if y == 1:
-                jeux_de_cartes.append((x,"Trèfle"))
-
+                color = "Trèfle"
             elif y == 2:
-                jeux_de_cartes.append((x,"Carreau"))
-
+                color = "Carreau"
             elif y == 3:
-                jeux_de_cartes.append((x,"Cœur"))
-
+                color = "Cœur"
             elif y == 4:
-                jeux_de_cartes.append((x,"Pique"))
+                color = "Pique"
 
-    return jeux_de_cartes
+            name = f"{grade} de {color}"
+            power = x
+            pack_of_cards.append((power, name))
 
-def distribuer_jeux_de_cartes(jeux_de_cartes): ## who's first()
+    return pack_of_cards
 
-    # affectation multiple
-    cartes_joueur_A = cartes_joueur_B = list()
+def distribute_cards():
 
-    # tant qu'il reste des cartes
-    # ici j'utilise un petit tricks sur la taille du paquet
-    while len(jeux_de_cartes) != 0:
+    while len(pack_of_cards) != 0:
 
-        if bool(len(jeux_de_cartes) % 2):
-            cartes_joueur_B.append(jeux_de_cartes.pop())
+        if bool(len(pack_of_cards) % 2):
+            deck_player_b.append(pack_of_cards.pop())
 
         else:
-            cartes_joueur_A.append(jeux_de_cartes.pop())
+            deck_player_a.append(pack_of_cards.pop())
 
-    return cartes_joueur_A, cartes_joueur_B
+def reverse_deck(opt=None):
+    if opt == None:
 
-def round(cartes_joueur_A, cartes_joueur_B):
+        deck_player_a.reverse()
+        deck_player_b.reverse()
+
+    elif opt == "a":
+
+        deck_player_a.reverse()
+
+    elif opt == "b":
+
+        deck_player_b.reverse()
+
+def distribute_prize(winner, prize):
+
+    if winner == "a":
+        reverse_deck("a")
+
+        for card in prize:
+            #print(f"card added to deck a : {card}")
+            deck_player_a.append(card)
+
+        reverse_deck("a")
+
+    elif winner == "b":
+
+        reverse_deck("b")
+
+        for card in prize:
+            #print(f"card added to deck b : {card}")
+            deck_player_b.append(card)
+
+        reverse_deck("b")
+
+def round():
 
     bataille, loop = False, True
-
-    cartes_a_gagner = list()
+    winner_prize = list()
 
     while loop:
 
-        carte_joueur_A = cartes_joueur_A.pop()
-        print(f"Joueur A : {carte_joueur_A[0]} de {carte_joueur_A[1]}")
+        picked_card_a = deck_player_a.pop()
+        picked_card_b = deck_player_b.pop()
 
-        carte_joueur_B = cartes_joueur_B.pop()
-        print(f"Joueur A : {carte_joueur_B[0]} de {carte_joueur_B[1]}")
+        print(f"Joueur A : {picked_card_a[1]}({len(deck_player_a)})  \tJoueur B : {picked_card_b[1]}({len(deck_player_b)})")
 
-        cartes_a_gagner.append(carte_joueur_A)
-        cartes_a_gagner.append(carte_joueur_B)
 
-        if carte_joueur_A[0] == carte_joueur_B[0]:
+        winner_prize.append(picked_card_a)
+        winner_prize.append(picked_card_b)
 
-            print("BATTAILLE !!")
-            gagnant = "bataille.."##
+        if picked_card_a[0] == picked_card_b[0]:
 
-        elif carte_joueur_A[0] > carte_joueur_B[0]:
-            print("Joueur A a gagner")
+            if len(deck_player_a) == 0 or len(deck_player_b) == 0:
 
-            for carte in cartes_a_gagner:
-                cartes_joueur_A.append(carte)
+                print("Match Nul !!!")
+                print("C'est SUPER SUPER rare ..")
+                exit()
 
+            pass
+
+        elif picked_card_a[0] > picked_card_b[0]:
+
+            print("Joueur A remporte les cartes")
+            distribute_prize("a", winner_prize)
             loop = False
 
-        elif carte_joueur_A[0] < carte_joueur_B[0]:
-            print("Joueur B a gagner")
+        elif picked_card_a[0] < picked_card_b[0]:
 
-            for carte in cartes_a_gagner:
-                cartes_joueur_A.append(carte)
+            print("Joueur B remporte les cartes")
 
+            distribute_prize("b", winner_prize)
             loop = False
 
-def play_game(cartes_joueur_A, cartes_joueur_B):
+def play_game():
 
-    enjeux = list()
+    is_running = True
 
-    while cartes_joueur_A != 0 or cartes_joueur_B != 0:
-        round(cartes_joueur_A, cartes_joueur_B)
-        for items in cartes_joueur_A:
-            print(f"{items}")
-        print("\n\n")
-        for items in cartes_joueur_B:
-            print(f"{items}")
+    while is_running:
+
+        winner_prize = list()
+
+        round()
+
+        if len(deck_player_a) == 0:
+
+            print("Player A Win !!")
+
+        elif len(deck_player_b) == 0:
+
+            print("Player B Win !!")
+        #debog_print()
+
+        #sleep(0.5)
 
 def main():
 
-    # CREATION DU PAQUET DE CARTE
-    jeux_de_cartes = creation_paquet()
+    create_pack()
 
-    # MELANGATION DU PAQUET (fonction shuffle import ci-dessus)
-    melange(jeux_de_cartes)
+    shuffle(pack_of_cards)
 
-    cartes_joueur_A, cartes_joueur_B = distribuer_jeux_de_cartes(jeux_de_cartes)
-
-    play_game(cartes_joueur_A, cartes_joueur_B)
+    distribute_cards()
+    play_game()
 
 main()
