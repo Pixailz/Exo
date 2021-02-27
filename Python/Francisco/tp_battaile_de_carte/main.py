@@ -179,7 +179,7 @@ def round():
         picked_card_a = deck_player_a.pop()
         picked_card_b = deck_player_b.pop()
 
-        print(f"Joueur A : {picked_card_a[1]}({len(deck_player_a)})  \tJoueur B : {picked_card_b[1]}({len(deck_player_b)})")
+        print(f"Joueur A : {picked_card_a[1]} \tJoueur B : {picked_card_b[1]}")
 
 
         winner_prize.append(picked_card_a)
