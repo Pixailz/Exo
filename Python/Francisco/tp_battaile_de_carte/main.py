@@ -46,19 +46,7 @@ def create_pack():
 
     for x in range(7, 14 + 1):
 
-        if x == 1:
-            grade = "Un"
-        elif x == 2:
-            grade = "Deux"
-        elif x == 3:
-            grade = "Trois"
-        elif x == 4:
-            grade = "Quatre"
-        elif x == 5:
-            grade = "Cinq"
-        elif x == 6:
-            grade = "Six"
-        elif x == 7:
+        if x == 7:
             grade = "Sept"
         elif x == 8:
             grade = "Huit"
