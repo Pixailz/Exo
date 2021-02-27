@@ -181,7 +181,6 @@ def round():
 
         print(f"Joueur A : {picked_card_a[1]} \tJoueur B : {picked_card_b[1]}")
 
-
         winner_prize.append(picked_card_a)
         winner_prize.append(picked_card_b)
 
