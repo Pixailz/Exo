@@ -207,6 +207,8 @@ def round():
             distribute_prize("b", winner_prize)
             loop = False
 
+    print("")
+
 def play_game():
 
     is_running = True
