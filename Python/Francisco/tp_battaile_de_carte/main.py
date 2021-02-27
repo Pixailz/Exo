@@ -192,7 +192,7 @@ def round():
                 print("C'est SUPER SUPER rare ..")
                 exit()
 
-            pass
+            sleep(time_round)
 
         elif picked_card_a[0] > picked_card_b[0]:
 
