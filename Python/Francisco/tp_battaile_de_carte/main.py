@@ -92,13 +92,48 @@ def create_pack():
 
 def distribute_cards():
 
+    print("Tossing a coin to know who's first.")
+    print("HEADS : Player A\nTAILS : Player B\n...")
+
+    sleep(0.5)
+
+    whos_first = randint(0,1)
+
+    if whos_first:
+
+        print("this is HEADS A begin")
+        whos_first = "a"
+
+    else:
+
+        print("this is TAILS B begin")
+        whos_first = "b"
+
+    print(bool(len(pack_of_cards) % 2))
+    exit()
+
     while len(pack_of_cards) != 0:
 
-        if bool(len(pack_of_cards) % 2):
-            deck_player_b.append(pack_of_cards.pop())
+        if whos_first == "a":
 
-        else:
-            deck_player_a.append(pack_of_cards.pop())
+            if bool(len(pack_of_cards) % 2):
+
+                deck_player_b.append(pack_of_cards.pop())
+
+            else:
+
+                deck_player_a.append(pack_of_cards.pop())
+
+        elif whos_first == "b":
+
+            if bool(len(pack_of_cards) % 2):
+
+                deck_player_a.append(pack_of_cards.pop())
+
+            else:
+
+                deck_player_b.append(pack_of_cards.pop())
+
 
 def reverse_deck(opt=None):
     if opt == None:
