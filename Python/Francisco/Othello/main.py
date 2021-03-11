@@ -10,58 +10,37 @@ black = "X"
  #
 #
 
-def alpha_to_num(alpha):
-
-    alpha = alpha.upper()
-    return ord(alpha) - 64
-
-def num_to_alpha(num):
-
-    return chr(64+num)
-
 class Plateaux():
-
     def __init__(self):
-
         self.row = 8
         self.column = 8
         self.placed_white = list()
         self.placed_black = list()
         self.plateau = list()
-
         self.create_plateau()
 
     def create_plateau(self):
-
         for a in range(self.row):
-
             row = list()
-
             for b in range(self.column):
-
                 row.append(void)
-
             self.plateau.append(row)
 
     def print_played(self):
         print("")
         placed_white = list()
         placed_black = list()
-
         for a in range(len(self.plateau)):
-
             for b in range(len(self.plateau[a])):
-
                 if self.plateau[a][b] == white:
-                    bb = num_to_alpha(b+1)
+                    bb = self.num_to_alpha(b+1)
                     aa = a+1
                     placed_white.append(f"W:{aa},{bb}")
 
                 elif self.plateau[a][b] == black:
-                    bb = num_to_alpha(b+1)
+                    bb = self.num_to_alpha(b+1)
                     aa = a+1
                     placed_black.append(f"B:{aa},{bb}")
-
         for item in placed_white:
             print(item)
         for item in placed_black:
@@ -72,10 +51,10 @@ class Plateaux():
         print("X  ", end="")
         for a in range(len(self.plateau[0])):
             if a + 1 == len(self.plateau[0]):
-                a = num_to_alpha(a + 1)
+                a = self.num_to_alpha(a + 1)
                 print(a)
             else:
-                a = num_to_alpha(a + 1)
+                a = self.num_to_alpha(a + 1)
                 print(f"{a} ", end="")
         for a in range(len(self.plateau)):
             for b in range(len(self.plateau[a])):
@@ -92,29 +71,82 @@ class Plateaux():
         print(self.placed_white)
         print(self.placed_black)
 
-    def play(self, player, *pos):
+    def check_already_placed(self, pos):
+        if pos not in self.placed_black and pos not in self.placed_white:
+            return True
+        else:
+            return False
 
-        axeX = pos[0] - 1
-        axeY = alpha_to_num(pos[1]) - 1
-
+    def play(self, player, entryX, entryY):
+        axeX = entryX - 1
+        axeY = self.alpha_to_num(entryY) - 1
         if player == white:
-            self.check()
-            self.plateau[axeX][axeY] = white
             axeXY = f"{axeX}{axeY}"
-            self.placed_white.append(axeXY)
-
+            if self.check_already_placed(axeXY):
+                try:
+                    self.plateau[axeX][axeY] = white
+                    self.placed_white.append(axeXY)
+                except IndexError:
+                    print("Error: choice out-of-range")
+                    self.turn -= 1
+            else:
+                print("Error: choice already played")
+                self.turn -= 1
         elif player == black:
-            self.plateau[axeX][axeY] = black
             axeXY = f"{axeX}{axeY}"
-            self.placed_black.append(axeXY)
-            self.check()
+            if self.check_already_placed(axeXY):
+                try:
+                    self.plateau[axeX][axeY] = black
+                    self.placed_black.append(axeXY)
+                except IndexError:
+                    print("Error: choice out-of-range")
+                    self.turn -= 1
+            else:
+                print("Error: choice already played")
+                self.turn -= 1
 
 
+    def alpha_to_num(self, alpha):
+        alpha = alpha.upper()
+        return ord(alpha) - 64
+
+    def num_to_alpha(self, num):
+        return chr(64+num)
+
+    def sanitarize_input(self):
+        if len(self.entry) > 2:
+            print("Error: Wrong Choice")
+            self.turn -= 1
+        else:
+            pos1 = self.entry[0]
+            pos2 = self.entry[1]
+            try:
+                pos1 = int(pos1)
+            except ValueError:
+                pos2 = int(pos2)
+            if type(pos1) == type(int()):
+                self.entryX = pos1
+                self.entryY = pos2
+            else:
+                self.entryX = pos2
+                self.entryY = pos1
+
+    def game(self):
+        self.playing = True
+        self.turn = 0
+        while self.playing:
+            self.turn += 1
+            if self.turn % 2:
+                self.entry = input("W-> ")
+                self.sanitarize_input()
+                self.play(white, self.entryX, self.entryY)
+                self.print_plateau()
+            else:
+                self.entry = input("B-> ")
+                self.sanitarize_input()
+                self.play(black, self.entryX, self.entryY)
+                self.print_plateau()
 
 if __name__ == "__main__":
     p1 = Plateaux()
-    p1.print_plateau()
-    p1.play(white, 2, "a")
-    p1.print_plateau()
-    p1.play(black, 2, "a")
-    p1.print_plateau()
+    p1.game()

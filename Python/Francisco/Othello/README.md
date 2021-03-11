@@ -79,3 +79,9 @@ Documentation et références
 MyLearningBox
   - sur OpenClassRooms (intro à TkInter) :
 https://openclassrooms.com/fr/courses/235344-apprenez-a-programmer-enpython/234859-creez-des-interfaces-graphiques-avec-tkinter
+
+
+## TODO
+- sanitarize more
+- add statements if two point are surounded by other player
+
