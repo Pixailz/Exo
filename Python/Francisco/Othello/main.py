@@ -3,150 +3,180 @@
 
 #
 # HEADER
-side_char = "#"
+row = 8
+column = 8
+
 void = "."
 white = "0"
 black = "X"
  #
 #
 
-class Plateaux():
-    def __init__(self):
-        self.row = 8
-        self.column = 8
-        self.placed_white = list()
-        self.placed_black = list()
-        self.plateau = list()
-        self.create_plateau()
+#
+# GLOBAL SCOPE VAR
+plateau = list()
+turn = int()
+entry = str()
+entryX = str()
+entryY = str()
 
-    def create_plateau(self):
-        for a in range(self.row):
-            row = list()
-            for b in range(self.column):
-                row.append(void)
-            self.plateau.append(row)
+sanitarize_input_error = False
+playing = True
+#
+#
 
-    def print_played(self):
-        print("")
-        placed_white = list()
-        placed_black = list()
-        for a in range(len(self.plateau)):
-            for b in range(len(self.plateau[a])):
-                if self.plateau[a][b] == white:
-                    bb = self.num_to_alpha(b+1)
-                    aa = a+1
-                    placed_white.append(f"W:{aa},{bb}")
+def init():
+    global row
+    for a in range(row):
+        row = list()
+        for b in range(column):
+            row.append(void)
+        plateau.append(row)
 
-                elif self.plateau[a][b] == black:
-                    bb = self.num_to_alpha(b+1)
-                    aa = a+1
-                    placed_black.append(f"B:{aa},{bb}")
-        for item in placed_white:
-            print(item)
-        for item in placed_black:
-            print(item)
+def sanitarize_input():
+    global entry, entryX, entryY, sanitarize_input_error
+    global turn
 
-    def print_plateau(self):
-        print("")
-        print("X  ", end="")
-        for a in range(len(self.plateau[0])):
-            if a + 1 == len(self.plateau[0]):
-                a = self.num_to_alpha(a + 1)
-                print(a)
-            else:
-                a = self.num_to_alpha(a + 1)
-                print(f"{a} ", end="")
-        for a in range(len(self.plateau)):
-            for b in range(len(self.plateau[a])):
-                if b+1 == len(self.plateau[a]):
-                    print(f"{self.plateau[a][b]}")
-                elif b == 0:
-                    if a + 1 < 10 :
-                        print(f"{a+1}  {self.plateau[a][b]} ", end="")
-                    else:
-                        print(f"{a+1} {self.plateau[a][b]} ", end="")
-                else:
-                    print(f"{self.plateau[a][b]} ", end="")
-        self.print_played()
-        print(self.placed_white)
-        print(self.placed_black)
+    entry_len = len(entry)
+    entry_count_alpha = 0
+    entry_count_num = 0
+    check_pass = False
 
-    def check_already_placed(self, pos):
-        if pos not in self.placed_black and pos not in self.placed_white:
-            return True
+    for char in entry:
+        if char in "abcdefghijklmnopqrstuvvwxyz":
+            entry_count_alpha += 1
+
+        if char in "0123456789":
+            entry_count_num += 1
+
+    if entry_count_alpha + entry_count_num != entry_len:
+        print("Error: Choice have bad char")
+
+    elif entry_count_alpha > entry_len / 2:
+        print("Error: Too many Alpha")
+
+    elif entry_count_num > entry_len / 2:
+        print("Error: Too many Numeric")
+
+    else:
+        check_pass = True
+
+    if check_pass:
+        pos1 = entry[0]
+        pos2 = entry[1]
+
+        try:
+            pos1 = int(pos1)
+
+        except ValueError:
+            pos2 = int(pos2)
+
+        if type(pos1) == type(int()):
+            entryX = pos1
+            entryY = pos2
+
         else:
-            return False
+            entryX = pos2
+            entryY = pos1
 
-    def play(self, player, entryX, entryY):
-        axeX = entryX - 1
-        axeY = self.alpha_to_num(entryY) - 1
-        if player == white:
-            axeXY = f"{axeX}{axeY}"
-            if self.check_already_placed(axeXY):
-                try:
-                    self.plateau[axeX][axeY] = white
-                    self.placed_white.append(axeXY)
-                except IndexError:
-                    print("Error: choice out-of-range")
-                    self.turn -= 1
-            else:
-                print("Error: choice already played")
-                self.turn -= 1
-        elif player == black:
-            axeXY = f"{axeX}{axeY}"
-            if self.check_already_placed(axeXY):
-                try:
-                    self.plateau[axeX][axeY] = black
-                    self.placed_black.append(axeXY)
-                except IndexError:
-                    print("Error: choice out-of-range")
-                    self.turn -= 1
-            else:
-                print("Error: choice already played")
-                self.turn -= 1
+    else:
+        print("Exemple : 1a")
+        sanitarize_input_error = True
 
+def alpha_to_num(alpha):
+    alpha = alpha.upper()
+    return ord(alpha) - 64
 
-    def alpha_to_num(self, alpha):
-        alpha = alpha.upper()
-        return ord(alpha) - 64
+def num_to_alpha(num):
+    return chr(64+num)
 
-    def num_to_alpha(self, num):
-        return chr(64+num)
+def check_already_placed(x, y):
+    if plateau[x][y] == void:
+        return True
+    else:
+        return False
 
-    def sanitarize_input(self):
-        if len(self.entry) > 2:
-            print("Error: Wrong Choice")
-            self.turn -= 1
-        else:
-            pos1 = self.entry[0]
-            pos2 = self.entry[1]
+def play(player, entryX, entryY):
+    global turn
+    axeX = entryX - 1
+    axeY = alpha_to_num(entryY) - 1
+
+    if player == white:
+        if check_already_placed(axeX, axeY):
             try:
-                pos1 = int(pos1)
-            except ValueError:
-                pos2 = int(pos2)
-            if type(pos1) == type(int()):
-                self.entryX = pos1
-                self.entryY = pos2
-            else:
-                self.entryX = pos2
-                self.entryY = pos1
+                plateau[axeX][axeY] = white
 
-    def game(self):
-        self.playing = True
-        self.turn = 0
-        while self.playing:
-            self.turn += 1
-            if self.turn % 2:
-                self.entry = input("W-> ")
-                self.sanitarize_input()
-                self.play(white, self.entryX, self.entryY)
-                self.print_plateau()
-            else:
-                self.entry = input("B-> ")
-                self.sanitarize_input()
-                self.play(black, self.entryX, self.entryY)
-                self.print_plateau()
+            except IndexError:
+                print("Error: choice out-of-range")
+                turn -= 1
 
-if __name__ == "__main__":
-    p1 = Plateaux()
-    p1.game()
+        else:
+            print("Error: choice already played")
+            turn -= 1
+
+    elif player == black:
+        if check_already_placed(axeX, axeY):
+            try:
+                plateau[axeX][axeY] = black
+
+            except IndexError:
+                print("Error: choice out-of-range")
+                turn -= 1
+
+        else:
+            print("Error: choice already played")
+            turn -= 1
+
+def print_plateau():
+    print("")
+    print("X  ", end="")
+    for a in range(len(plateau[0])):
+        if a + 1 == len(plateau[0]):
+            a = num_to_alpha(a + 1)
+            print(a)
+
+        else:
+            a = num_to_alpha(a + 1)
+            print(f"{a} ", end="")
+
+    for a in range(len(plateau)):
+        for b in range(len(plateau[a])):
+            if b+1 == len(plateau[a]):
+                print(f"{plateau[a][b]}")
+
+            elif b == 0:
+                if a + 1 < 10 :
+                    print(f"{a+1}  {plateau[a][b]} ", end="")
+
+                else:
+                    print(f"{a+1} {plateau[a][b]} ", end="")
+
+            else:
+                print(f"{plateau[a][b]} ", end="")
+
+def game():
+    while playing:
+        global turn, entry, entryX, entryY, sanitarize_input
+        turn += 1
+        print_plateau()
+
+        if turn % 2:
+            entry = input("W-> ")
+            sanitarize_input()
+
+            if not sanitarize_input_error:
+                play(white, entryX, entryY)
+            else:
+                turn -= 1
+
+        else:
+            entry = input("B-> ")
+            sanitarize_input()
+
+            if not sanitarize_input_error:
+                play(black, entryX, entryY)
+            else:
+                turn -= 1
+
+init()
+game()
