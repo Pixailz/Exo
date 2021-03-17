@@ -113,7 +113,7 @@ class Plateau():
 
         self.entry = str()
         self.plateau = list()
-
+        self.rules_error = str()
         self.plateau_check_entry()
         self.plateau_create()
 
