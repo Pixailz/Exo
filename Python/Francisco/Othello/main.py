@@ -199,7 +199,7 @@ class Plateau():
 
         else:
             self.plateau_rules_can_play(player, axeX, axeY)
-            self.plateau[axeX][axeY].type_set(player)
+            self.plateau[axeX][axeY].case_type_set(player)
             self.plateau_rules_return_pawn(axeX, axeY)
 
 class Case():
@@ -225,7 +225,7 @@ class Case():
     def case_return_type(self):
         return self.case_type
 
-    def type_set(self, t):
+    def case_type_set(self, t):
         self.case_type = t
         self.case_parse_type()
 
