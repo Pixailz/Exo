@@ -186,6 +186,9 @@ class Plateau():
                 else:
                     print(f"{self.plateau[a][b].case_return_char()} ", end ="")
 
+    def plateau_return_pawn(self, axeX, axeY):
+        pass
+
     def plateau_play(self, player, axeX, axeY):
 
         if self.plateau[axeX][axeY].case_return_type() not in "void":
@@ -193,6 +196,7 @@ class Plateau():
 
         else:
             self.plateau[axeX][axeY].type_set(player)
+            self.plateau_return_pawn(axeX, axeY)
 
 class Case():
 
