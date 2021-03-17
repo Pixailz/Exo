@@ -186,7 +186,10 @@ class Plateau():
                 else:
                     print(f"{self.plateau[a][b].case_return_char()} ", end ="")
 
-    def plateau_return_pawn(self, axeX, axeY):
+    def plateau_rules_can_play(self, player, axeX, axeY):
+        pass
+
+    def plateau_rules_return_pawn(self, axeX, axeY):
         pass
 
     def plateau_play(self, player, axeX, axeY):
@@ -195,8 +198,9 @@ class Plateau():
             return "AlreadyPlayed"
 
         else:
+            self.plateau_rules_can_play(player, axeX, axeY)
             self.plateau[axeX][axeY].type_set(player)
-            self.plateau_return_pawn(axeX, axeY)
+            self.plateau_rules_return_pawn(axeX, axeY)
 
 class Case():
 
