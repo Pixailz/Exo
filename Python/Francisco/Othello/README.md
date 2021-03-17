@@ -83,5 +83,9 @@ https://openclassrooms.com/fr/courses/235344-apprenez-a-programmer-enpython/2348
 
 ## TODO
 - sanitarize better (handle the case of "1a2b")
+<<<<<<< HEAD
 - fix when grid_len more than 10
+=======
+- add statements if two point are surounded by other player
+>>>>>>> 4cc5c03c20a3057c3e606c050aba954aca27044a
 
