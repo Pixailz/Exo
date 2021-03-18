@@ -33,6 +33,7 @@ class Partie():
 
             if self.turn % 2:
                 self.current_player = "white"
+
             else:
                 self.current_player = "black"
 
@@ -318,7 +319,10 @@ class Case():
         elif self.case_type == "black":
             self.case_char = "X"
 
-    def case_parse_legal(self):
+    def case_legal_set(self):
+        pass
+
+    def case_legal_unset(self):
         pass
 
     def case_return_char(self):
