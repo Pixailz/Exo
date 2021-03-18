@@ -52,6 +52,10 @@ class Partie():
                     print(f"Error: La case {self.entry} a déja été jouer")
                     self.turn -= 1
 
+                elif plateau_return_code == "CannotPlay":
+                    print(f"Error: La case {self.entry} ne contient pas de case ennemie adjacentes")
+                    self.turn -= 1
+
             else:
                 print("Exemple : 1A")
                 self.turn -= 1
@@ -186,21 +190,67 @@ class Plateau():
                 else:
                     print(f"{self.plateau[a][b].case_return_char()} ", end ="")
 
-    def plateau_rules_can_play(self, player, axeX, axeY):
-        pass
-
-    def plateau_rules_return_pawn(self, axeX, axeY):
-        pass
-
-    def plateau_play(self, player, axeX, axeY):
-
+    def plateau_rules_already_played(self, axeX, axeY):
         if self.plateau[axeX][axeY].case_return_type() not in "void":
+            return True
+        else:
+            return False
+
+    def plateau_rules_can_play(self, axeX, axeY):
+
+        if self.player == "white":
+            self.opponent = "black"
+
+        else:
+            self.opponent = "white"
+
+        check = 0
+
+        for a in range(-1, 1+1):
+            for b in range(-1, 1+1):
+                if self.plateau[axeX+a][axeY+b].case_return_type() == self.opponent:
+                    check += 1
+
+        return bool(check)
+
+    def plateau_rules_return_pawn(self):
+        if self.plateau[self.axeX+1][self.axeY].case_return_type() == self.opponent:
+            # HAUT
+            if self.plateau[self.axeX+2][self.axeY].case_return_type() == self.player:
+                self.plateau[self.axeX+1][self.axeY].case_type_set(self.player)
+
+        if self.plateau[self.axeX][self.axeY+1].case_return_type() == self.opponent:
+            # DROITE
+            if self.plateau[self.axeX+2][self.axeY].case_return_type() == self.player:
+                self.plateau[self.axeX+1][self.axeY].case_type_set(self.player)
+
+        if self.plateau[self.axeX-1][self.axeY].case_return_type() == self.opponent:
+            # BAS
+            if self.plateau[self.axeX-2][self.axeY].case_return_type() == self.player:
+                self.plateau[self.axeX-1][self.axeY].case_type_set(self.player)
+
+        if self.plateau[self.axeX][self.axeY-1].case_return_type() == self.opponent:
+            # GAUCHE
+            if self.plateau[self.axeX][self.axeY-2].case_return_type() == self.player:
+                self.plateau[self.axeX][self.axeY-1].case_type_set(self.player)
+                print(self.plateau[self.axeX][self.axeY-1].case_return_type())
+                print(self.player)
+                exit()
+    def plateau_play(self, player, axeX, axeY):
+        self.player = player
+        self.axeX = axeX
+        self.axeY = axeY
+
+        if self.plateau_rules_already_played(self.axeX, self.axeY):
             return "AlreadyPlayed"
 
         else:
-            self.plateau_rules_can_play(player, axeX, axeY)
-            self.plateau[axeX][axeY].case_type_set(player)
-            self.plateau_rules_return_pawn(axeX, axeY)
+            if self.plateau_rules_can_play(self.axeX, self.axeY):
+                self.plateau[axeX][axeY].case_type_set(self.player)
+                self.plateau_rules_return_pawn()
+
+            else:
+                return "CannotPlay"
 
 class Case():
 
@@ -218,6 +268,9 @@ class Case():
 
         elif self.case_type == "black":
             self.case_char = "X"
+
+    def case_parse_legal(self):
+        pass
 
     def case_return_char(self):
         return self.case_char
