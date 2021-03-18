@@ -214,6 +214,12 @@ class Plateau():
         return bool(check)
 
     def plateau_rules_return_pawn(self):
+        for a in range(-1, 1+1):
+            for b in range(-1, 1+1):
+                if self.plateau[self.axeX+a][self.axeY+b].case_return_type() == self.opponent:
+                    if self.plateau[self.axeX+(a*2)][self.axeY+(b*2)].case_return_type() == self.player:
+                        self.plateau[self.axeX+a][self.axeY+b].case_type_set(self.player)
+        """
         if self.plateau[self.axeX+1][self.axeY].case_return_type() == self.opponent:
             # HAUT
             if self.plateau[self.axeX+2][self.axeY].case_return_type() == self.player:
@@ -221,8 +227,8 @@ class Plateau():
 
         if self.plateau[self.axeX][self.axeY+1].case_return_type() == self.opponent:
             # DROITE
-            if self.plateau[self.axeX+2][self.axeY].case_return_type() == self.player:
-                self.plateau[self.axeX+1][self.axeY].case_type_set(self.player)
+            if self.plateau[self.axeX][self.axeY+2].case_return_type() == self.player:
+                self.plateau[self.axeX][self.axeY+1].case_type_set(self.player)
 
         if self.plateau[self.axeX-1][self.axeY].case_return_type() == self.opponent:
             # BAS
@@ -233,9 +239,10 @@ class Plateau():
             # GAUCHE
             if self.plateau[self.axeX][self.axeY-2].case_return_type() == self.player:
                 self.plateau[self.axeX][self.axeY-1].case_type_set(self.player)
+                print(self.plateau[self.axeX][self.axeY-1].case_return_char())
                 print(self.plateau[self.axeX][self.axeY-1].case_return_type())
                 print(self.player)
-                exit()
+        """
     def plateau_play(self, player, axeX, axeY):
         self.player = player
         self.axeX = axeX
