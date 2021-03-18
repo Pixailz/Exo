@@ -33,9 +33,11 @@ class Partie():
 
             if self.turn % 2:
                 self.current_player = "white"
+                plateau.plateau_set_opponent("white")
 
             else:
                 self.current_player = "black"
+                plateau.plateau_set_opponent("black")
 
             if self.current_player == "white":
                 print("Au tour des Blanc")
@@ -122,6 +124,15 @@ class Plateau():
         self.plateau_check_entry()
         self.plateau_create()
 
+    def plateau_set_opponent(self, player):
+        self.player = player
+
+        if player == "white":
+            self.opponent = "black"
+
+        else:
+            self.opponent = "white"
+
     def plateau_check_entry(self):
 
         checked = False
@@ -198,12 +209,6 @@ class Plateau():
             return False
 
     def plateau_rules_can_play(self, axeX, axeY):
-
-        if self.player == "white":
-            self.opponent = "black"
-
-        else:
-            self.opponent = "white"
 
         check = 0
 
