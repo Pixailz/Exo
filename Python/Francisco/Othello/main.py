@@ -127,7 +127,7 @@ class Plateau():
     def plateau_set_opponent(self, player):
         self.player = player
 
-        if player == "white":
+        if self.player == "white":
             self.opponent = "black"
 
         else:
@@ -292,7 +292,6 @@ class Plateau():
             self.plateau[a[0]][a[1]].case_type_set(self.player)
 
     def plateau_play(self, player, axeX, axeY):
-        self.player = player
         self.axeX = axeX
         self.axeY = axeY
 
