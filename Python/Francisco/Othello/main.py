@@ -213,36 +213,78 @@ class Plateau():
 
         return bool(check)
 
+    def plateau_rules_check_dir(self, dirX, dirY):
+        to_turn = list()
+        have_to_turn = 0
+        axeX = self.axeX + dirX
+        axeY = self.axeY + dirY
+
+        if self.plateau[axeX + dirX][axeY + dirY].case_return_type() == self.player:
+
+            print("To be turned")
+            print(f"{axeX},{axeY}\t{self.plateau[axeX][axeY].case_return_type()}")
+            to_turn.append((axeX, axeY))
+            have_to_turn += 1
+
+        elif self.plateau[axeX + dirX][axeY + dirY].case_return_type() == self.opponent:
+
+            axeX = axeX + dirX
+            axeY = axeY + dirY
+
+            to_borderX = (self.entry - 1) - (axeX)
+            to_borderY = (self.entry - 1) - (axeY)
+
+            if to_borderX <= to_borderY:
+                min_to_border = to_borderX
+
+            elif to_borderX > to_borderY:
+                min_to_border = to_borderY
+
+            is_first = True
+            for a in range(min_to_border):
+                if self.plateau[axeX + dirX * a][axeY + dirY * a].case_return_type() == self.player:
+                    if is_first:
+                        to_turn.append((axeX, axeY))
+                        to_turn.append((axeX + dirX * a, axeY + dirY * a))
+                        is_first = False
+                        have_to_turn += 1
+                    else:
+                        to_turn.append((axeX + dirX * a, axeY + dirY * a))
+                        have_to_turn += 1
+
+                if self.plateau[axeX + dirX * a][axeY + dirY * a].case_return_type() == self.opponent:
+
+                    if is_first:
+                        to_turn.append((axeX - dirX, axeY - dirY))
+                        to_turn.append((axeX + dirX * a, axeY + dirY * a))
+                        is_first = False
+                    else:
+                        to_turn.append((axeX + dirX * a, axeY + dirY * a))
+        if bool(have_to_turn):
+            return(True, to_turn)
+        else:
+            return False
+
+
     def plateau_rules_return_pawn(self):
-        for a in range(-1, 1+1):
-            for b in range(-1, 1+1):
+
+        self.to_turn = list()
+        self.dir_to_check = list()
+
+        for a in range(-1, 1 + 1):
+            for b in range(-1, 1 + 1):
                 if self.plateau[self.axeX+a][self.axeY+b].case_return_type() == self.opponent:
-                    if self.plateau[self.axeX+(a*2)][self.axeY+(b*2)].case_return_type() == self.player:
-                        self.plateau[self.axeX+a][self.axeY+b].case_type_set(self.player)
-        """
-        if self.plateau[self.axeX+1][self.axeY].case_return_type() == self.opponent:
-            # HAUT
-            if self.plateau[self.axeX+2][self.axeY].case_return_type() == self.player:
-                self.plateau[self.axeX+1][self.axeY].case_type_set(self.player)
+                    self.dir_to_check.append((a, b))
 
-        if self.plateau[self.axeX][self.axeY+1].case_return_type() == self.opponent:
-            # DROITE
-            if self.plateau[self.axeX][self.axeY+2].case_return_type() == self.player:
-                self.plateau[self.axeX][self.axeY+1].case_type_set(self.player)
+        for a in self.dir_to_check:
+            have_to_turn = self.plateau_rules_check_dir(a[0], a[1])
+            if have_to_turn:
+                for b in have_to_turn[1]:
+                    self.to_turn.append((b[0], b[1]))
 
-        if self.plateau[self.axeX-1][self.axeY].case_return_type() == self.opponent:
-            # BAS
-            if self.plateau[self.axeX-2][self.axeY].case_return_type() == self.player:
-                self.plateau[self.axeX-1][self.axeY].case_type_set(self.player)
+        for a in self.to_turn:
+            self.plateau[a[0]][a[1]].case_type_set(self.player)
 
-        if self.plateau[self.axeX][self.axeY-1].case_return_type() == self.opponent:
-            # GAUCHE
-            if self.plateau[self.axeX][self.axeY-2].case_return_type() == self.player:
-                self.plateau[self.axeX][self.axeY-1].case_type_set(self.player)
-                print(self.plateau[self.axeX][self.axeY-1].case_return_char())
-                print(self.plateau[self.axeX][self.axeY-1].case_return_type())
-                print(self.player)
-        """
     def plateau_play(self, player, axeX, axeY):
         self.player = player
         self.axeX = axeX
