@@ -14,127 +14,39 @@ def alpha_to_num(alpha):
 def num_to_alpha(num):
     return chr(64+num)
 
-class Partie():
+class Case():
+    def __init__(self, t):
+        self.case_type_set(t)
 
-    def __init__(self):
+    def case_type_set(self, t):
+        self.case_type = t
+        self.case_parse_type()
 
-        plateau = Plateau()
+    def case_parse_type(self):
+        if self.case_type == "void":
+            self.case_char = "."
 
-        self.playing = True
-        self.turn = 0
+        elif self.case_type == "white":
+            self.case_char = "O"
 
-        while self.playing:
+        elif self.case_type == "black":
+            self.case_char = "X"
 
-            self.turn += 1
-            self.sanitarize_input_error = str()
-            self.entryX = int()
-            self.entryY = int()
-            plateau.plateau_print()
+    def case_return_char(self):
+        return self.case_char
 
-            if self.turn % 2:
-                self.current_player = "white"
-                plateau.plateau_set_opponent("white")
-
-            else:
-                self.current_player = "black"
-                plateau.plateau_set_opponent("black")
-
-            if self.current_player == "white":
-                print("Au tour des Blanc")
-
-            elif self.current_player == "black":
-                print("Au tour des Noir")
-
-            self.entry = input("-> ")
-            self.sanitarize_input_error = self.sanitarize_input()
-
-            if not self.sanitarize_input_error:
-                plateau_return_code = plateau.plateau_play(self.current_player, self.entryX, self.entryY)
-
-                if plateau_return_code == "AlreadyPlayed":
-                    print(f"Error: La case {self.entry} a déja été jouer")
-                    self.turn -= 1
-
-                elif plateau_return_code == "CannotPlay":
-                    print(f"Error: La case {self.entry} ne contient pas de case ennemie adjacentes")
-                    self.turn -= 1
-
-            else:
-                print("Exemple : 1A")
-                self.turn -= 1
-
-        print("Stopping ...")
-
-    def sanitarize_input(self):
-        entry_len = len(self.entry)
-        entry_count_alpha = 0
-        entry_count_num = 0
-        check_pass = False
-
-        for char in self.entry:
-            if char in "abcdefghijklmnopqrstuvvwxyz":
-                entry_count_alpha += 1
-
-            if char in "0123456789":
-                entry_count_num += 1
-
-        if entry_count_alpha + entry_count_num != entry_len:
-            print("Error: Votre choix comporte de mauvais caractères")
-            return True
-
-        elif entry_count_alpha > entry_len / 2:
-            print("Error: Votre choix comporte trop de lèttres")
-            return True
-
-        elif entry_count_num > entry_len / 2:
-            print("Error: Votre choix comporte trop de chiffre")
-            return True
-
-        elif entry_len == 0:
-            print("Error: Votre choix est vide")
-            return True
-
-        else:
-            pos1 = self.entry[0]
-            pos2 = self.entry[1]
-
-            try:
-                pos1 = int(pos1)
-
-            except ValueError:
-                pos2 = int(pos2)
-
-            if type(pos1) == type(int()):
-                pos2 = alpha_to_num(pos2)
-                self.entryX = pos1 - 1
-                self.entryY = pos2 - 1
-
-            else:
-                pos1 = alpha_to_num(pos1)
-                self.entryX = pos2 - 1
-                self.entryY = pos1 - 1
+    def case_return_type(self):
+        return self.case_type
 
 class Plateau():
-
     def __init__(self):
-
         self.entry = str()
         self.plateau = list()
         self.rules_error = str()
         self.plateau_check_entry()
         self.plateau_create()
 
-    def plateau_set_opponent(self, player):
-        self.player = player
-
-        if self.player == "white":
-            self.opponent = "black"
-
-        else:
-            self.opponent = "white"
-
     def plateau_check_entry(self):
-
         checked = False
 
         while not checked:
@@ -155,17 +67,16 @@ class Plateau():
                 checked = True
 
     def plateau_create(self):
-
         self.plateau.clear()
 
         for a in range(self.entry):
-            row = list()
+            row =list()
 
             for b in range(self.entry):
 
                 if (a == self.entry / 2 and b == self.entry / 2) or\
-                    (a + 1 == self.entry / 2 and b + 1 == self.entry / 2 ):
-                    row.append(Case("black"))
+                   (a + 1 == self.entry / 2 and b + 1 == self.entry / 2):
+                   row.append(Case("black"))
 
                 elif (a + 1 == self.entry / 2 and b == self.entry / 2) or\
                     (a == self.entry / 2 and b + 1 == self.entry / 2):
@@ -173,11 +84,9 @@ class Plateau():
 
                 else:
                     row.append(Case("void"))
-
             self.plateau.append(row)
 
     def plateau_print(self):
-
         print("")
         for a in range(self.entry):
             if a == 0:
@@ -192,9 +101,8 @@ class Plateau():
             for b in range(self.entry):
                 if b + 1 == self.entry:
                     print(f"{self.plateau[a][b].case_return_char()}")
-
                 elif b == 0:
-                    if a+1 < 10:
+                    if a + 1 < 10:
                         print(f"{a+1}  {self.plateau[a][b].case_return_char()} ", end="")
 
                     else:
@@ -202,9 +110,19 @@ class Plateau():
                 else:
                     print(f"{self.plateau[a][b].case_return_char()} ", end ="")
 
-    def plateau_rules_already_played(self, axeX, axeY):
-        if self.plateau[axeX][axeY].case_return_type() not in "void":
+    def plateau_set_opponent(self, player):
+        self.player = player
+
+        if self.player == "white":
+            self.opponent = "black"
+
+        else:
+            self.opponent = "white"
+
+    def plateau_rules_already_played(self):
+        if self.plateau[self.axeX][self.axeY].case_return_type() not in "void":
             return True
+
         else:
             return False
 
@@ -212,9 +130,9 @@ class Plateau():
 
         check = 0
 
-        for a in range(-1, 1+1):
-            for b in range(-1, 1+1):
-                if self.plateau[axeX+a][axeY+b].case_return_type() == self.opponent:
+        for a in range(-1, 1 + 1):
+            for b in range(-1, 1 + 1):
+                if self.plateau[axeX + a][axeY + b].case_return_type() == self.opponent:
                     check += 1
 
         return bool(check)
@@ -266,36 +184,36 @@ class Plateau():
                         is_first = False
                     else:
                         to_turn.append((axeX + dirX * a, axeY + dirY * a))
+
         if bool(have_to_turn):
             return(True, to_turn)
         else:
             return False
 
-
     def plateau_rules_return_pawn(self):
-
         self.to_turn = list()
         self.dir_to_check = list()
 
         for a in range(-1, 1 + 1):
             for b in range(-1, 1 + 1):
-                if self.plateau[self.axeX+a][self.axeY+b].case_return_type() == self.opponent:
+                if self.plateau[self.axeX + a][self.axeY + b].case_return_type() == self.opponent:
                     self.dir_to_check.append((a, b))
 
         for a in self.dir_to_check:
             have_to_turn = self.plateau_rules_check_dir(a[0], a[1])
+
             if have_to_turn:
                 for b in have_to_turn[1]:
                     self.to_turn.append((b[0], b[1]))
 
-        for a in self.to_turn:
-            self.plateau[a[0]][a[1]].case_type_set(self.player)
+            for a in self.to_turn:
+                self.plateau[a[0]][a[1]].case_type_set(self.player)
 
-    def plateau_play(self, player, axeX, axeY):
+    def plateau_play(self, axeX, axeY):
         self.axeX = axeX
         self.axeY = axeY
 
-        if self.plateau_rules_already_played(self.axeX, self.axeY):
+        if self.plateau_rules_already_played():
             return "AlreadyPlayed"
 
         else:
@@ -306,37 +224,93 @@ class Plateau():
             else:
                 return "CannotPlay"
 
-class Case():
+class Partie():
+    def __init__(self):
+        plateau = Plateau()
 
-    def __init__(self, t):
-        self.case_type = t
-        self.case_parse_type()
+        self.playing = True
+        self.turn = 0
 
-    def case_parse_type(self):
+        while self.playing:
+            self.turn += 1
+            self.sanitarize_input_error = str()
+            self.entryX = int()
+            self.entryY = int()
+            plateau.plateau_print()
 
-        if self.case_type == "void":
-            self.case_char = "."
+            if self.turn % 2:
+                plateau.plateau_set_opponent("white")
 
-        elif self.case_type == "white":
-            self.case_char = "O"
+            else:
+                plateau.plateau_set_opponent("black")
 
-        elif self.case_type == "black":
-            self.case_char = "X"
+            if plateau.player == "white":
+                print("Au tour des Blanc")
 
-    def case_legal_set(self):
-        pass
+            elif plateau.player == "black":
+                print("Au tour des Noir")
 
-    def case_legal_unset(self):
-        pass
+            self.entry = input("-> ")
+            self.sanitarize_input_error = self.sanitarize_input()
 
-    def case_return_char(self):
-        return self.case_char
+            if not self.sanitarize_input_error:
+                plateau_return_code = plateau.plateau_play(self.entryX, self.entryY)
 
-    def case_return_type(self):
-        return self.case_type
+                if plateau_return_code == "AlreadyPlayed":
+                    print(f"Error: La case {self.entry} a déja été jouer")
+                    self.turn -= 1
 
-    def case_type_set(self, t):
-        self.case_type = t
-        self.case_parse_type()
+                elif plateau_return_code == "CannotPlay":
+                    print(f"Error: La case {self.entry} ne contient pas de case ennemie adjacentes")
+                    self.turn -= 1
+
+    def sanitarize_input(self):
+        entry_len = len(self.entry)
+        entry_count_alpha = 0
+        entry_count_num = 0
+        check_pass = False
+
+        for char in self.entry:
+            if char in "abcdefghijklmnopqrstuvvwxyz":
+                entry_count_alpha += 1
+
+            if char in "0123456789":
+                entry_count_num += 1
+
+        if entry_count_alpha + entry_count_num != entry_len:
+            print("Error: Votre choix comporte de mauvais caractères")
+            return True
+
+        elif entry_count_alpha > entry_len / 2:
+            print("Error: Votre choix comporte trop de lèttres")
+            return True
+
+        elif entry_count_num > entry_len / 2:
+            print("Error: Votre choix comporte trop de chiffre")
+            return True
+
+        elif entry_len == 0:
+            print("Error: Votre choix est vide")
+            return True
+
+        else:
+            pos1 = self.entry[0]
+            pos2 = self.entry[1]
+
+            try:
+                pos1 = int(pos1)
+
+            except ValueError:
+                pos2 = int(pos2)
+
+            if type(pos1) == type(int()):
+                pos2 = alpha_to_num(pos2)
+                self.entryX = pos1 - 1
+                self.entryY = pos2 - 1
+
+            else:
+                pos1 = alpha_to_num(pos1)
+                self.entryX = pos2 - 1
+                self.entryY = pos1 - 1
 
 p1 = Partie()
