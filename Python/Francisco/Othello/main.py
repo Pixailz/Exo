@@ -196,8 +196,12 @@ class Plateau():
 
         for a in range(-1, 1 + 1):
             for b in range(-1, 1 + 1):
-                if self.plateau[self.axeX + a][self.axeY + b].case_return_type() == self.opponent:
-                    self.dir_to_check.append((a, b))
+                if self.axeX + a >= self.entry or self.axeX + a < 0 or\
+                   self.axeY + b >= self.entry or self.axeY + b < 0:
+                    pass
+                else:
+                    if self.plateau[self.axeX + a][self.axeY + b].case_return_type() == self.opponent:
+                        self.dir_to_check.append((a, b))
 
         for a in self.dir_to_check:
             have_to_turn = self.plateau_rules_check_dir(a[0], a[1])
